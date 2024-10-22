@@ -181,7 +181,7 @@
 
     <div class="carousel-inner">
         <!-- Primera imagen del carrusel -->
-        <div class="carousel-item active" style="background-image: url('/nekomicon_bookstore/imagenes/gato_leyendo_un_libro.jpg');">
+        <div class="carousel-item active" style="background-image: url('{{ url_for('static', filename='imagenes/gato_leyendo_un_libro.jpg') }}');">
             <div class="carousel-caption">
                 <h1>Bienvenidos a Nekomicon</h1>
                 <p>Descubre los mejores libros y mangas</p>
@@ -190,7 +190,7 @@
         </div>
 
         <!-- Segunda imagen del carrusel -->
-        <div class="carousel-item" style="background-image: url('/nekomicon_bookstore/imagenes/libros-gatos.jpg');">
+        <div class="carousel-item active" style="background-image: url('{{ url_for('static', filename='imagenes/libros-gatos.jpg') }}');">
             <div class="carousel-caption">
                 <h1>Nuevas colecciones</h1>
                 <p>Encuentra tus títulos favoritos a precios increíbles</p>
@@ -199,7 +199,7 @@
         </div>
 
         <!-- Tercera imagen del carrusel -->
-        <div class="carousel-item" style="background-image: url('/nekomicon_bookstore/imagenes/gato_dinero.jpg');">
+        <div class="carousel-item active" style="background-image: url('{{ url_for('static', filename='imagenes/gato_dinero.jpg') }}');">
             <div class="carousel-caption">
                 <h1>Ofertas especiales</h1>
                 <p>No te pierdas nuestras promociones limitadas</p>

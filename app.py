@@ -15,7 +15,8 @@ def obtener_libros():
 @app.route('/')
 def index():
     libros = obtener_libros()
-    return render_template('main.html', libros=libros)
+    return render_template('html/main.html', libros=libros)  # Asegúrate de que la ruta sea correcta
 
 if __name__ == '__main__':
     app.run(debug=True)
+
