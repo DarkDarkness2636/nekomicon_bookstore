@@ -100,6 +100,29 @@
             background-color: #a8600b;
         }
 
+        /* Estilos personalizados para el carrusel de libros */
+        .book-carousel-item {
+            padding: 20px;
+        }
+
+        .book-card {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .book-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .book-card h5 {
+            margin: 10px 0;
+        }
+
     </style>
 </head>
 <body>
@@ -196,6 +219,34 @@
     </button>
 </div>
 
+<!-- Carrusel de libros -->
+<div id="booksCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% for i in range(0, libros|length, 5) %}
+        <div class="carousel-item {% if i == 0 %}active{% endif %}">
+            <div class="row">
+                {% for libro in libros[i:i+5] %}
+                <div class="col-md-2 book-card">
+                    <img src="{{ libro[3] }}" alt="Libro">
+                    <h5>{{ libro[1] }}</h5>
+                    <p>{{ libro[2] }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Controles de navegación del carrusel -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#booksCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#booksCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+    </button>
+</div>
 
 
 <!-- Bootstrap JS -->
