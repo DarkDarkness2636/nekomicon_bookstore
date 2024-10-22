@@ -53,47 +53,6 @@ def index():
     conn.close()
     return render_template('html/main.html', libros=libros, current_user=current_user)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        conn = get_usuarios_db_connection()
-        user = conn.execute('SELECT * FROM usuarios WHERE username = ? AND password = ?', (username, password)).fetchone()
-        conn.close()
-
-        if user:
-            user_obj = User(user['id'], user['username'], user['password'], user['is_admin'])
-            login_user(user_obj)
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html', error='Credenciales incorrectas')
-
-    return render_template('login.html')
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
-@app.route('/add_to_cart/<int:libro_id>')
-def add_to_cart(libro_id):
-    if 'cart' not in session:
-        session['cart'] = []
-
-    session['cart'].append(libro_id)
-    session.modified = True
-    return redirect(url_for('index'))
-
-@app.route('/remove_from_cart/<int:libro_id>')
-def remove_from_cart(libro_id):
-    if 'cart' in session:
-        session['cart'].remove(libro_id)
-        session.modified = True
-    return redirect(url_for('cart'))
-
 @app.route('/cart')
 @login_required
 def cart():
@@ -106,14 +65,7 @@ def cart():
         total = sum(libro[4] for libro in cart_items)  # Suponiendo que el precio está en la columna 4
 
     conn.close()
-    return render_template('cart.html', cart_items=cart_items, total=total)
-
-@app.route('/book/<int:libro_id>')
-def book_detail(libro_id):
-    conn = get_libros_db_connection()
-    libro = conn.execute('SELECT * FROM libros WHERE id = ?', (libro_id,)).fetchone()
-    conn.close()
-    return render_template('book_detail.html', libro=libro)
+    return render_template('html/cart.html', cart_items=cart_items, total=total)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -149,23 +101,6 @@ def add_to_cart(libro_id):
     session.modified = True  # Marcar la sesión como modificada
     return redirect(url_for('index'))
 
-@app.route('/cart')
-@login_required
-def cart():
-    conn = get_libros_db_connection()
-    cart_items = []
-    total_price = 0  # Inicializa el total
-
-    if 'cart' in session:
-        cart_items = conn.execute('SELECT * FROM libros WHERE id IN ({})'.format(','.join('?' * len(session['cart']))), session['cart']).fetchall()
-
-        # Calcular el total
-        for item in cart_items:
-            total_price += item['precio']  # Asegúrate de usar el nombre correcto de la columna para el precio
-
-    conn.close()
-    return render_template('html/cart.html', cart_items=cart_items, total_price=total_price)  # Pasa el total al template
-
 @app.route('/remove_from_cart/<int:libro_id>')
 def remove_from_cart(libro_id):
     if 'cart' in session:
@@ -173,6 +108,12 @@ def remove_from_cart(libro_id):
         session.modified = True  # Marcar la sesión como modificada
     return redirect(url_for('cart'))
 
+@app.route('/comprar/<int:libro_id>')
+def book_detail(libro_id):
+    conn = get_db_connection()
+    libro = conn.execute('SELECT * FROM libros WHERE id = ?', (libro_id,)).fetchone()
+    conn.close()
+    return render_template('html/book_detail.html', libro=libro)
 
 if __name__ == '__main__':
     app.run(debug=True)
