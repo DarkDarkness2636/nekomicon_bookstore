@@ -20,7 +20,7 @@ def book_detail(libro_id):
     conn = get_db_connection()
     libro = conn.execute('SELECT * FROM libros WHERE id = ?', (libro_id,)).fetchone()
     conn.close()
-    return render_template('book_detail.html', libro=libro)
+    return render_template('html/book_detail.html', libro=libro)
 
 if __name__ == '__main__':
     app.run(debug=True)
