@@ -3,7 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 import sqlite3
 
 app = Flask(__name__)
-app.secret_key = 'tu_clave_secreta'
+app.secret_key = 'tu_clave_secreta'  # Necesaria para manejar sesiones
 
 # Inicializar Flask-Login
 login_manager = LoginManager()
@@ -77,24 +77,33 @@ def logout():
 def add_to_cart(libro_id):
     if 'cart' not in session:
         session['cart'] = []
+
     session['cart'].append(libro_id)
     session.modified = True
     return redirect(url_for('index'))
+
+@app.route('/remove_from_cart/<int:libro_id>')
+def remove_from_cart(libro_id):
+    if 'cart' in session:
+        session['cart'].remove(libro_id)
+        session.modified = True
+    return redirect(url_for('cart'))
 
 @app.route('/cart')
 @login_required
 def cart():
     conn = get_libros_db_connection()
     cart_items = []
+    total = 0
 
     if 'cart' in session:
         cart_items = conn.execute('SELECT * FROM libros WHERE id IN ({})'.format(','.join('?' * len(session['cart']))), session['cart']).fetchall()
+        total = sum(libro[4] for libro in cart_items)  # Suponiendo que el precio está en la columna 4
 
-    total = sum(libro[4] for libro in cart_items)  # Calcular el total
     conn.close()
     return render_template('cart.html', cart_items=cart_items, total=total)
 
-@app.route('/book_detail/<int:libro_id>')
+@app.route('/book/<int:libro_id>')
 def book_detail(libro_id):
     conn = get_libros_db_connection()
     libro = conn.execute('SELECT * FROM libros WHERE id = ?', (libro_id,)).fetchone()
