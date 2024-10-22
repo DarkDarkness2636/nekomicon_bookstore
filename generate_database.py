@@ -39,7 +39,7 @@ def crear_base_datos():
 
     # Insertar algunos libros de ejemplo en la tabla libros
     libros_data = [
-        ('El Juego de Ender', 'Orson Scott Card', 'Un niño prodigio es entrenado en una escuela militar espacial.', 9.99, 'ruta/a/imagen1.jpg', 'Ciencia Ficción'),
+        ('El Juego de Ender', 'Orson Scott Card', 'Un niño prodigio es entrenado en una escuela militar espacial.', 379.00, 'imagenes/portada_ender.jpeg', 'Ciencia Ficción'),
         ('1984', 'George Orwell', 'Una novela distópica sobre un futuro totalitario.', 14.99, 'ruta/a/imagen2.jpg', 'Ficción'),
         ('Harry Potter y la Piedra Filosofal', 'J.K. Rowling', 'Un joven descubre su identidad como mago.', 19.99, 'ruta/a/imagen3.jpg', 'Fantasía'),
         ('Cien años de soledad', 'Gabriel García Márquez', 'La historia de la familia Buendía en el pueblo ficticio de Macondo.', 12.50, 'ruta/a/imagen4.jpg', 'Ficción'),

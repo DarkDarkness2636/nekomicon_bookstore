@@ -108,7 +108,7 @@
             margin: 0 auto; /* Centra el carrusel */
             padding: 0 60px; /* Añade espacio a los lados */
             left: 100px;
-            margin-bottom: -350px;
+            margin-bottom: -250px;
         }
 
         .books-carousel .carousel-control-prev {
@@ -238,7 +238,7 @@
             <div class="row">
                 {% for libro in libros[i:i+5] %}
                 <div class="col-md-2 book-card">
-                    <img src="{{ libro[3] }}" alt="Libro">
+                    <img src="{{ url_for('static', filename=libro[5]) }}" alt="Libro">
                     <h5>{{ libro[1] }}</h5>
                     <p>Autor: {{ libro[2] }}</p>
                     <p>Precio: ${{ libro[4] }}</p>
