@@ -37,6 +37,22 @@ def crear_base_datos():
         )
     ''')
 
+     # Crear tabla para usuarios
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             username TEXT NOT NULL UNIQUE,
+             password TEXT NOT NULL,
+             is_admin BOOLEAN NOT NULL DEFAULT 0
+            )
+    ''')
+
+        # Insertar usuario admin
+    cursor.execute('''
+        INSERT OR IGNORE INTO usuarios (username, password, is_admin)
+        VALUES ('admin', 'admin', 1)
+    ''')
+
     # Insertar algunos libros de ejemplo en la tabla libros
     libros_data = [
         ('El Juego de Ender', 'Orson Scott Card', 'Un niño prodigio es entrenado en una escuela militar espacial.', 379.00, 'imagenes/portada_ender.jpeg', 'Ciencia Ficción'),
