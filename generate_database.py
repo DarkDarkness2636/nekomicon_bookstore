@@ -1,10 +1,8 @@
 import sqlite3
 
-# Ruta de la base de datos
 DATABASE_PATH = 'nekomicon_bookstore.db'
 
 def crear_base_datos():
-    # Conectar a la base de datos (se creará si no existe)
     conexion = sqlite3.connect(DATABASE_PATH)
     cursor = conexion.cursor()
 
@@ -37,13 +35,29 @@ def crear_base_datos():
         )
     ''')
 
-    # Insertar algunos libros de ejemplo en la tabla libros
+    # Crear tabla para usuarios
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            is_admin BOOLEAN NOT NULL DEFAULT 0
+        )
+    ''')
+
+    # Insertar usuario admin
+    cursor.execute('''
+        INSERT OR IGNORE INTO usuarios (username, password, is_admin) 
+        VALUES ('admin', 'admin', 1)
+    ''')
+
+    # Insertar algunos libros de ejemplo
     libros_data = [
         ('El Juego de Ender', 'Orson Scott Card', 'Un niño prodigio es entrenado en una escuela militar espacial.', 379.00, 'imagenes/portada_ender.jpeg', 'Ciencia Ficción'),
-        ('1984', 'George Orwell', 'Una novela distópica sobre un futuro totalitario.', 14.99, 'imagenes/1984_portada.jpg', 'Ficción'),
-        ('Harry Potter y la Piedra Filosofal', 'J.K. Rowling', 'Un joven descubre su identidad como mago.', 19.99, 'imagenes/hppf_portada.jpg', 'Fantasía'),
-        ('Cien años de soledad', 'Gabriel García Márquez', 'La historia de la familia Buendía en el pueblo ficticio de Macondo.', 12.50, 'imagenes/portada_cien_anos_de_soledad.jpg', 'Ficción'),
-        ('El Señor de los Anillos', 'J.R.R. Tolkien', 'La lucha épica entre el bien y el mal en la Tierra Media.', 20.00, 'imagenes/lotr_portada.jpg', 'Fantasía')
+        ('1984', 'George Orwell', 'Una novela distópica sobre un futuro totalitario.', 14.99, 'ruta/a/imagen2.jpg', 'Ficción'),
+        ('Harry Potter y la Piedra Filosofal', 'J.K. Rowling', 'Un joven descubre su identidad como mago.', 19.99, 'ruta/a/imagen3.jpg', 'Fantasía'),
+        ('Cien años de soledad', 'Gabriel García Márquez', 'La historia de la familia Buendía en el pueblo ficticio de Macondo.', 12.50, 'ruta/a/imagen4.jpg', 'Ficción'),
+        ('El Señor de los Anillos', 'J.R.R. Tolkien', 'La lucha épica entre el bien y el mal en la Tierra Media.', 20.00, 'ruta/a/imagen5.jpg', 'Fantasía')
     ]
 
     # Insertar libros en la tabla
@@ -53,13 +67,9 @@ def crear_base_datos():
     ''', libros_data)
 
     # Asumimos que los IDs de los libros anteriores son 1, 2, 3, 4 y 5.
-    # Insertar libros en la tabla libros_mas_vendidos
-    cursor.execute('INSERT INTO libros_mas_vendidos (id) VALUES (1), (2)')  # Libros 1 y 2 son más vendidos
+    cursor.execute('INSERT INTO libros_mas_vendidos (id) VALUES (1), (2)')
+    cursor.execute('INSERT INTO libros_nuevos (id) VALUES (3), (4)')
 
-    # Insertar libros en la tabla libros_nuevos
-    cursor.execute('INSERT INTO libros_nuevos (id) VALUES (3), (4)')  # Libros 3 y 4 son nuevos
-
-    # Guardar los cambios y cerrar la conexión
     conexion.commit()
     conexion.close()
 
