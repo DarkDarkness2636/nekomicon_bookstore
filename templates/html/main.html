@@ -108,7 +108,7 @@
             margin: 0 auto; /* Centra el carrusel */
             padding: 0 60px; /* Añade espacio a los lados */
             left: 100px;
-            margin-bottom: -450px;
+            margin-bottom: -350px;
         }
 
         .books-carousel .carousel-control-prev {
@@ -231,7 +231,7 @@
 
 <!-- Carrusel de libros mas vendidios -->
 <div id="booksCarouselBestSellers" class="carousel slide books-carousel" data-bs-ride="carousel">
-    <h1>Libros mas vendidos</h1>
+    <h1>Libros más vendidos</h1>
     <div class="carousel-inner">
         {% for i in range(0, libros|length, 5) %}
         <div class="carousel-item {% if i == 0 %}active{% endif %}">
@@ -240,14 +240,16 @@
                 <div class="col-md-2 book-card">
                     <img src="{{ libro[3] }}" alt="Libro">
                     <h5>{{ libro[1] }}</h5>
-                    <p>{{ libro[2] }}</p>
+                    <p>Autor: {{ libro[2] }}</p>
+                    <p>Precio: ${{ libro[4] }}</p>
+                    <a href="/comprar/{{ libro[0] }}" class="btn btn-custom">Comprar</a>  <!-- Botón para comprar -->
                 </div>
                 {% endfor %}
             </div>
         </div>
         {% endfor %}
     </div>
- 
+
     <!-- Controles de navegación del carrusel -->
     <button class="carousel-control-prev" type="button" data-bs-target="#booksCarouselBestSellers" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -258,7 +260,6 @@
         <span class="visually-hidden">Siguiente</span>
     </button>
 </div>
-
 <!-- Carrusel de libros nuevos -->
 
 <div id="booksCarouselNewBooks" class="carousel slide books-carousel" data-bs-ride="carousel">

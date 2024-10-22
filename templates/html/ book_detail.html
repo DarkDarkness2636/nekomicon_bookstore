@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ libro[1] }} - Nekomicon</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>{{ libro[1] }}</h1>
+    <img src="{{ libro[3] }}" alt="Libro" class="img-fluid">
+    <p><strong>Autor:</strong> {{ libro[4] }}</p>
+    <p><strong>Descripción:</strong> {{ libro[2] }}</p>
+    <p><strong>Precio:</strong> ${{ libro[5] }}</p>
+    <a href="/" class="btn btn-primary">Regresar</a>
+    <a href="#" class="btn btn-custom">Comprar</a>  <!-- Aquí puedes implementar la lógica de compra -->
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
