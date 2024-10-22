@@ -73,5 +73,38 @@ def logout():
     logout_user()  # Cerrar sesión
     return redirect(url_for('index'))
 
+@app.route('/add_to_cart/<int:libro_id>')
+def add_to_cart(libro_id):
+    if 'cart' not in session:
+        session['cart'] = []
+
+    session['cart'].append(libro_id)
+    session.modified = True  # Marcar la sesión como modificada
+    return redirect(url_for('index'))
+
+@app.route('/cart')
+@login_required
+def cart():
+    conn = get_libros_db_connection()
+    cart_items = []
+    total_price = 0  # Inicializa el total
+
+    if 'cart' in session:
+        cart_items = conn.execute('SELECT * FROM libros WHERE id IN ({})'.format(','.join('?' * len(session['cart']))), session['cart']).fetchall()
+
+        # Calcular el total
+        for item in cart_items:
+            total_price += item['precio']  # Asegúrate de usar el nombre correcto de la columna para el precio
+
+    conn.close()
+    return render_template('cart.html', cart_items=cart_items, total_price=total_price)  # Pasa el total al template
+
+@app.route('/remove_from_cart/<int:libro_id>')
+def remove_from_cart(libro_id):
+    if 'cart' in session:
+        session['cart'].remove(libro_id)  # Eliminar el libro del carrito si existe
+        session.modified = True  # Marcar la sesión como modificada
+    return redirect(url_for('cart'))
+
 if __name__ == '__main__':
     app.run(debug=True)
