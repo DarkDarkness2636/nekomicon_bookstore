@@ -124,8 +124,9 @@
         }
 
         .book-card img {
-            max-width: 100%;
-            height: auto;
+            width: 160px;  /* Ajusta el tamaño según sea necesario */
+            height: 260px; /* Ajusta el tamaño según sea necesario */
+            object-fit: cover; /* Mantiene la relación de aspecto sin distorsionar */
             border-radius: 5px;
         }
 
@@ -270,9 +271,11 @@
             <div class="row">
                 {% for libro in libros[i:i+5] %}
                 <div class="col-md-2 book-card">
-                    <img src="{{ libro[3] }}" alt="Libro">
+                    <img src="{{ url_for('static', filename=libro[5]) }}" alt="Libro">
                     <h5>{{ libro[1] }}</h5>
-                    <p>{{ libro[2] }}</p>
+                    <p>Autor: {{ libro[2] }}</p>
+                    <p>Precio: ${{ libro[4] }}</p>
+                    <a href="/comprar/{{ libro[0] }}" class="btn btn-custom">Comprar</a>  <!-- Botón para comprar -->
                 </div>
                 {% endfor %}
             </div>

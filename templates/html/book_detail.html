@@ -58,6 +58,14 @@
             font-size: 1rem;
             margin-left: 0.5rem;
         }
+
+        .book-image{
+            width: 300px; /* Ajusta el ancho según sea necesario */
+            height: 450px; /* Ajusta la altura según sea necesario */
+            object-fit: cover; /* Mantiene la relación de aspecto y llena el contenedor */
+            border-radius: 5px; /* Para bordes redondeados, si lo deseas */
+        }
+
     </style>
 </head>
 <header>
@@ -107,7 +115,7 @@
 <body>
 <div class="container mt-5">
     <h1>{{ libro[1] }}</h1>
-    <img src="{{ url_for('static', filename=libro[5]) }}" alt="Libro">
+    <img  class="book-image" src="{{ url_for('static', filename=libro[5]) }}" alt="Libro">
     <p><strong>Autor:</strong> {{ libro[2] }}</p>
     <p><strong>Descripción:</strong> {{ libro[3] }}</p>
     <p><strong>Precio:</strong> ${{ libro[4] }}</p>
