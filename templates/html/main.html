@@ -12,6 +12,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f5f5f5; /* Un gris claro suave */
+            color: #333; /* Color de texto para buen contraste */
         }
 
         .navbar {
@@ -156,7 +158,15 @@
                     <i class="fa-solid fa-cart-shopping me-2" style="color: #c4780e; font-size: 1.5rem;"></i>
                     <span class="text">Carrito</span>
                     <span class="ms-2 number">({{ cart_count }})</span>
-                    <a href="/cart" class="btn btn-outline-secondary ms-3">Ver Carrito</a> <!-- Botón para ver el carrito -->
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ url_for('cart') }}">Carrito</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-warning" href="{{ url_for('login', message='Por favor, inicia sesión para acceder al carrito') }}">Carrito</a>
+                    </li>
+                    {% endif %}
                 </div>
             </div>
         </div>

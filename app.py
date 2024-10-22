@@ -132,17 +132,18 @@ def index():
     return render_template('html/main.html', libros=libros, current_user=current_user)
 
 @app.route('/cart')
-@login_required  # Para que el carrito sea accesible solo para usuarios logueados
+@login_required
 def cart():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login', message="Por favor, inicia sesión para acceder al carrito"))
+
     conn = get_libros_db_connection()
     cart_items = []
     total_price = 0
 
     if 'cart' in session:
         cart_items = conn.execute('SELECT * FROM libros WHERE id IN ({})'.format(','.join('?' * len(session['cart']))), session['cart']).fetchall()
-
-        # Calcula el total
-        total_price = sum(libro['precio'] for libro in cart_items)
+        total_price = sum(item['precio'] for item in cart_items)
 
     conn.close()
     return render_template('html/cart.html', cart_items=cart_items, total_price=total_price)
