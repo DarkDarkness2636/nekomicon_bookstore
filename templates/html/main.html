@@ -101,8 +101,18 @@
         }
 
         /* Estilos personalizados para el carrusel de libros */
-        .book-carousel-item {
-            padding: 20px;
+        .books-carousel {
+            position: relative; /* Posición relativa para que los hijos se posicionen en relación a este contenedor */
+            width: 100%; /* Aumenta el ancho para darle más espacio al contenido */
+            max-width: 1300px; /* Define un ancho máximo si es necesario */
+            margin: 0 auto; /* Centra el carrusel */
+            padding: 0 60px; /* Añade espacio a los lados */
+            left: 100px;
+
+        }
+
+        .books-carousel .carousel-control-prev {
+            left: -120px; /* Asegura que el botón izquierdo no se superponga */
         }
 
         .book-card {
@@ -220,7 +230,7 @@
 </div>
 
 <!-- Carrusel de libros -->
-<div id="booksCarousel" class="carousel slide" data-bs-ride="carousel">
+<div id="booksCarousel" class="carousel slide books-carousel" data-bs-ride="carousel">
     <div class="carousel-inner">
         {% for i in range(0, libros|length, 5) %}
         <div class="carousel-item {% if i == 0 %}active{% endif %}">
