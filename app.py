@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import sqlite3
+import stripe
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'  # Necesaria para manejar sesiones
@@ -12,6 +13,83 @@ login_manager.init_app(app)
 # Rutas para las bases de datos
 LIBROS_DATABASE_PATH = 'nekomicon_bookstore.db'
 USUARIOS_DATABASE_PATH = 'usuarios.db'
+
+stripe.api_key = 'sk_test_51QCk4iBVPHQKEtjfeQZXblbOogBEtpHMuyqnWcIqSo5WJtkpFk0nBLXzMe5ImSUXtQ2W4kXkE1WjjZQ43eaqIciO00gXAImpJK'  # Clave secreta
+
+@app.route('/create-checkout-session/<int:libro_id>', methods=['POST'])
+def create_checkout_session(libro_id):
+    conn = get_libros_db_connection()
+    libro = conn.execute('SELECT * FROM libros WHERE id = ?', (libro_id,)).fetchone()
+    conn.close()
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'mxn',
+                    'product_data': {
+                        'name': libro['titulo'],  # Nombre del libro
+                    },
+                    'unit_amount': int(libro['precio'] * 100),  # Precio en centavos (Stripe usa centavos)
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='http://127.0.0.1:5000/success',
+            cancel_url='http://127.0.0.1:5000/cancel',
+        )
+        return redirect(checkout_session.url, code=303)
+    except Exception as e:
+        return str(e)
+
+
+# Ruta para el pago
+@app.route('/create-checkout-session/cart', methods=['POST'])
+@login_required
+def create_checkout_session_cart():
+    conn = get_libros_db_connection()
+    cart_items = []
+    total_price = 0
+
+    if 'cart' in session:
+        cart_items = conn.execute('SELECT * FROM libros WHERE id IN ({})'.format(','.join('?' * len(session['cart']))), session['cart']).fetchall()
+
+        # Calcular el total
+        total_price = sum(libro['precio'] for libro in cart_items)
+
+    conn.close()
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'mxn',
+                    'product_data': {
+                        'name': 'Carrito de libros',  # Nombre general para el carrito
+                    },
+                    'unit_amount': int(total_price * 100),  # Total en centavos
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='http://127.0.0.1:5000/success',
+            cancel_url='http://127.0.0.1:5000/cancel',
+        )
+        return redirect(checkout_session.url, code=303)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/success')
+def success():
+    return "Pago completado con éxito."
+
+@app.route('/cancel')
+def cancel():
+    return "Pago cancelado."
+
 
 # Función para la conexión a la base de datos de libros
 def get_libros_db_connection():
@@ -54,18 +132,20 @@ def index():
     return render_template('html/main.html', libros=libros, current_user=current_user)
 
 @app.route('/cart')
-@login_required
+@login_required  # Para que el carrito sea accesible solo para usuarios logueados
 def cart():
     conn = get_libros_db_connection()
     cart_items = []
-    total = 0
+    total_price = 0
 
     if 'cart' in session:
         cart_items = conn.execute('SELECT * FROM libros WHERE id IN ({})'.format(','.join('?' * len(session['cart']))), session['cart']).fetchall()
-        total = sum(libro[4] for libro in cart_items)  # Suponiendo que el precio está en la columna 4
+
+        # Calcula el total
+        total_price = sum(libro['precio'] for libro in cart_items)
 
     conn.close()
-    return render_template('html/cart.html', cart_items=cart_items, total=total)
+    return render_template('html/cart.html', cart_items=cart_items, total_price=total_price)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,16 +177,27 @@ def add_to_cart(libro_id):
     if 'cart' not in session:
         session['cart'] = []
 
-    session['cart'].append(libro_id)
-    session.modified = True  # Marcar la sesión como modificada
-    return redirect(url_for('index'))
+    session['cart'].append(libro_id)  # Agrega el ID del libro al carrito
+    session.modified = True  # Marca la sesión como modificada
+    return redirect(url_for('cart'))  # Redirige al carrito después de agregar
+
 
 @app.route('/remove_from_cart/<int:libro_id>')
 def remove_from_cart(libro_id):
     if 'cart' in session:
-        session['cart'].remove(libro_id)  # Eliminar el libro del carrito si existe
-        session.modified = True  # Marcar la sesión como modificada
-    return redirect(url_for('cart'))
+        session['cart'].remove(libro_id)  # Elimina el libro del carrito
+        session.modified = True
+    return redirect(url_for('cart'))  # Redirige al carrito después de eliminar
+
+@app.route('/checkout')
+@login_required  # Solo para usuarios autenticados
+def checkout():
+    if 'cart' not in session or len(session['cart']) == 0:
+        return redirect(url_for('cart'))  # Si el carrito está vacío, redirigir
+
+    # Aquí puedes procesar el pago, por ahora solo simulamos
+    session.pop('cart', None)  # Vacía el carrito después del "pago"
+    return render_template('html/checkout_success.html')
 
 @app.route('/comprar/<int:libro_id>')
 def book_detail(libro_id):

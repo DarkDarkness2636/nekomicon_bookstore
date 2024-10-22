@@ -250,6 +250,7 @@
                     <p>Autor: {{ libro[2] }}</p>
                     <p>Precio: ${{ libro[4] }}</p>
                     <a href="/comprar/{{ libro[0] }}" class="btn btn-custom">Comprar</a>  <!-- Botón para comprar -->
+                    <a href="/add_to_cart/{{ libro[0] }}" class="btn btn-secondary">Agregar al carrito</a>
                 </div>
                 {% endfor %}
             </div>
@@ -282,6 +283,7 @@
                     <p>Autor: {{ libro[2] }}</p>
                     <p>Precio: ${{ libro[4] }}</p>
                     <a href="/comprar/{{ libro[0] }}" class="btn btn-custom">Comprar</a>  <!-- Botón para comprar -->
+                    <a href="/add_to_cart/{{ libro[0] }}" class="btn btn-secondary">Agregar al carrito</a>
                 </div>
                 {% endfor %}
             </div>
