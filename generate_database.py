@@ -1,10 +1,8 @@
 import sqlite3
 
-# Ruta de la base de datos
 DATABASE_PATH = 'nekomicon_bookstore.db'
 
 def crear_base_datos():
-    # Conectar a la base de datos (se creará si no existe)
     conexion = sqlite3.connect(DATABASE_PATH)
     cursor = conexion.cursor()
 
@@ -79,13 +77,9 @@ def crear_base_datos():
     ''', libros_data)
 
     # Asumimos que los IDs de los libros anteriores son 1, 2, 3, 4 y 5.
-    # Insertar libros en la tabla libros_mas_vendidos
-    cursor.execute('INSERT INTO libros_mas_vendidos (id) VALUES (1), (2)')  # Libros 1 y 2 son más vendidos
+    cursor.execute('INSERT INTO libros_mas_vendidos (id) VALUES (1), (2)')
+    cursor.execute('INSERT INTO libros_nuevos (id) VALUES (3), (4)')
 
-    # Insertar libros en la tabla libros_nuevos
-    cursor.execute('INSERT INTO libros_nuevos (id) VALUES (3), (4)')  # Libros 3 y 4 son nuevos
-
-    # Guardar los cambios y cerrar la conexión
     conexion.commit()
     conexion.close()
 
