@@ -3,53 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito - Neekomicon</title>
+    <title>Carrito de Compras</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/f1f29a0057.js" crossorigin="anonymous"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .book-card {
-            text-align: center;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-        .book-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-    </style>
 </head>
 <body>
-<header>
-    <div class="container-fluid bg-light py-3">
-        <h1 class="text-center">Carrito de Compras</h1>
-    </div>
-</header>
-
 <div class="container">
-    <h1>Tu Carrito</h1>
-    <div class="row">
+    <h1>Carrito de Compras</h1>
+    <ul class="list-group">
         {% for item in cart_items %}
-        <div class="col-md-3">
-            <div class="book-card">
-                <img src="{{ url_for('static', filename=item[5]) }}" alt="Libro">
-                <h5>{{ item[1] }}</h5>
-                <p>Autor: {{ item[2] }}</p>
-                <p>Precio: ${{ item[4] }}</p>
-                <a href="/remove_from_cart/{{ item[0] }}" class="btn btn-danger">Eliminar</a>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <img src="{{ url_for('static', filename=item[5]) }}" alt="{{ item[1] }}" style="width: 50px; height: auto;">
+                {{ item[1] }} - ${{ item[4] }}
             </div>
-        </div>
+            <a href="{{ url_for('remove_from_cart', libro_id=item[0]) }}" class="btn btn-danger btn-sm">Eliminar</a>
+        </li>
         {% endfor %}
-    </div>
+    </ul>
+    <h3 class="mt-3">Total: ${{ total_price }}</h3>
 
-    <h3>Total: ${{ total_price }}</h3>  <!-- Mostrar el total aquí -->
-    <a href="/checkout" class="btn btn-success">Proceder a la Compra</a>
+    <!-- Botón para volver al menú principal -->
+    <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Volver al Menú Principal</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
