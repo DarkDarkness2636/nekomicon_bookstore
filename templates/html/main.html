@@ -156,8 +156,6 @@
                 {% endif %}
                 <div class="content-shopping-cart">
                     <i class="fa-solid fa-cart-shopping me-2" style="color: #c4780e; font-size: 1.5rem;"></i>
-                    <span class="text">Carrito</span>
-                    <span class="ms-2 number">({{ cart_count }})</span>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="btn btn-primary" href="{{ url_for('cart') }}">Carrito</a>
